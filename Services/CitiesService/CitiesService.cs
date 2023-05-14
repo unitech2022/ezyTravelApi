@@ -1,7 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
 using TouristApi.Data;
 using AutoMapper;
 using X.PagedList;
@@ -9,6 +6,7 @@ using TouristApi.Models.BaseEntity;
 using TouristApi.Models;
 using Microsoft.EntityFrameworkCore;
 using TouristApi.ViewModel;
+using Newtonsoft.Json;
 
 namespace TouristApi.Services
 {
@@ -41,6 +39,11 @@ namespace TouristApi.Services
             if (City != null)
             {
                 _context.Cities!.Remove(City);
+                List<Photo> photos = await _context.Photos!.Where(t => t.CityId == typeId).ToListAsync();
+                if (photos.Count > 0)
+                {
+                    _context.Photos!.RemoveRange(photos);
+                }
 
                 await _context.SaveChangesAsync();
             }
@@ -48,6 +51,43 @@ namespace TouristApi.Services
             return City!;
 
         }
+
+
+
+        public async Task<CityDetails> GetCityDetails(int cityId)
+
+        {
+
+            // List<Photo> photos=new List<Photo>();
+            City? city = await _context.Cities!.FirstOrDefaultAsync(x => x.Id == cityId);
+            Country? country = await _context.Countries!.FirstOrDefaultAsync(t => t.Id == city!.CountryId);
+            ResponseWeather responseWeather = await GitWeatherOfCity(city!.Title!);
+
+            List<Place> places = await _context.Places!.OrderBy(x => x.Order).Where(t => t.CityId == cityId).ToListAsync();
+            List<Photo> photos = await _context.Photos!.Where(t => t.CityId == cityId && t.Type == 0).ToListAsync();
+            List<Photo> videos = await _context.Photos!.Where(t => t.CityId == cityId && t.Type == 1).ToListAsync();
+            // foreach (var item in places)
+            // {
+            //     List<Photo> photosFind =await _context.Photos!.Where(t => t.PlaceId==item.Id&&t.Type==0).ToListAsync();
+            //     if(photosFind.Count > 0){
+            //         photos.AddRange(photosFind);
+            //     }
+            // }
+
+            CityDetails cityDetails = new CityDetails
+            {
+                city = city,
+                weather = responseWeather,
+                Photos = photos,
+                Videos = videos,
+                Places = places,
+                country = country
+            };
+
+            return cityDetails;
+
+        }
+
 
         public async Task<dynamic> GetItems(int page)
         {
@@ -87,44 +127,47 @@ namespace TouristApi.Services
         public async Task<dynamic> GitById(int typeId)
         {
             City? City = await _context.Cities!.FirstOrDefaultAsync(x => x.Id == typeId);
+
             return City!;
         }
 
-        public async Task<dynamic> GitCitiesByCountryId(int typeId, int page)
+        public async Task<dynamic> GitCitiesByCountryId(int typeId)
         {
-            List<City> Cities = await _context.Cities!.Where(t => t.CountryId == typeId).ToListAsync();
-
-            Country? country=await _context.Countries!.FirstOrDefaultAsync(t=>t.Id==typeId);
-
-            var pageResults = 30f;
-            var pageCount = Math.Ceiling(Cities.Count() / pageResults);
-
-            var items = await Cities
-                .Skip((page - 1) * (int)pageResults)
-                .Take((int)pageResults)
-                .ToListAsync();
-
-
-
-            BaseResponse baseResponse = new BaseResponse
+            List<City> cities = new List<City>();
+            Country? country;
+            if (typeId == 0)
             {
-                  
-                Items = items,
-                CurrentPage = page,
-                TotalPages = (int)pageCount
+                country = await _context.Countries!.FirstAsync();
+
+                cities = await _context.Cities!.Where(t => t.CountryId == typeId).ToListAsync();
+
+            }
+            else
+            {
+                cities = await _context.Cities!.Where(t => t.CountryId == typeId).ToListAsync();
+
+                country = await _context.Countries!.FirstOrDefaultAsync(t => t.Id == typeId);
+            }
+
+
+
+            ResponseCity responseCity = new ResponseCity
+            {
+                Country = country,
+                Cities = cities
             };
 
-            return baseResponse;
+            return responseCity;
         }
 
 
-  public async Task<dynamic> GitCitiesByCountryIdAdmin(int typeId)
+        public async Task<dynamic> GitCitiesByCountryIdAdmin(int typeId)
         {
             List<City> Cities = await _context.Cities!.Where(t => t.CountryId == typeId).ToListAsync();
 
 
 
-          
+
             return Cities;
         }
 
@@ -138,5 +181,56 @@ namespace TouristApi.Services
         {
             //
         }
+
+        public async Task<dynamic> SearchCity(string textSearch)
+        {
+            List<CityResponse> citiesResponses = new List<CityResponse>();
+            List<City> cities = await _context.Cities!.Where(t => t.Title!.Contains(textSearch)).ToListAsync();
+            foreach (var item in cities)
+            {
+                Country? country = await _context.Countries!.FirstOrDefaultAsync(t => t.Id == item.CountryId);
+                CityResponse cityResponse = new CityResponse
+                {
+                    City = item,
+                    Country = country
+                };
+                citiesResponses.Add(cityResponse);
+            }
+
+            return citiesResponses;
+
+        }
+        //get weather
+        async Task<ResponseWeather> GitWeatherOfCity(string city)
+        {
+            using (var client = new HttpClient())
+            {
+                try
+                {
+                    client.BaseAddress = new Uri("http://api.openweathermap.org");
+                    var response = await client.GetAsync($"/data/2.5/weather?lang=ar&q={city}&appid=f99e4be1f07b9b39845b0055fd9bc2e6&units=metric");
+                    response.EnsureSuccessStatusCode();
+
+                    var stringResult = await response.Content.ReadAsStringAsync();
+                    var rawWeather = JsonConvert.DeserializeObject<OpenWeatherResponse>(stringResult);
+                    ResponseWeather responseWeather = new ResponseWeather
+                    {
+                        temp = rawWeather!.Main!.Temp,
+                        summary = string.Join(",", rawWeather.Weather!.Select(x => x.Description)),
+                        CityName = rawWeather.Name,
+                        icon = string.Join(",", rawWeather.Weather!.Select(x => x.icon)),
+                    };
+
+                    return responseWeather;
+                }
+                catch (HttpRequestException httpRequestException)
+                {
+                    return new ResponseWeather();
+                }
+            }
+
+        }
+
+
     }
 }

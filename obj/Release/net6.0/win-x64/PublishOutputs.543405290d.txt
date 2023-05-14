@@ -1,0 +1,5 @@
+/Users/gatekee/projects/projectsApi/TouristApi/bin/Release/net6.0/win-x64/publish/appsettings.Development.json
+/Users/gatekee/projects/projectsApi/TouristApi/bin/Release/net6.0/win-x64/publish/appsettings.json
+/Users/gatekee/projects/projectsApi/TouristApi/bin/Release/net6.0/win-x64/publish/TouristApi.pdb
+/Users/gatekee/projects/projectsApi/TouristApi/bin/Release/net6.0/win-x64/publish/aspnetcorev2_inprocess.dll
+/Users/gatekee/projects/projectsApi/TouristApi/bin/Release/net6.0/win-x64/publish/TouristApi.exe

@@ -8,6 +8,6 @@ namespace TouristApi.Services
 {
     public interface IFavoriteService :BaseInterface
     {
-         
+         Task<dynamic> GetFavorites(string ids);
     }
 }

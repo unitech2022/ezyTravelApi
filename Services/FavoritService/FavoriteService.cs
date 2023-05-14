@@ -48,6 +48,24 @@ namespace TouristApi.Services
         
         }
 
+        public async Task<dynamic> GetFavorites(string ids)
+        {
+             string[] idsPlaces=new string[]{};
+            if(ids!=null){
+              idsPlaces=ids.Split("#");
+            }
+            
+            List<City> favorites=new List<City>();
+            foreach (var item in idsPlaces)
+            {
+                City? city=await _context.Cities!.FirstOrDefaultAsync(t=> t.Id==int.Parse(item));
+                if(city!=null){
+                    favorites.Add(city);
+                }
+            }
+            return favorites;
+        }
+
         public async Task<dynamic> GetItems( int page)
         {
              List<Favorite> Favorites = await _context.Favorites!.ToListAsync();

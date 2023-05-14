@@ -50,6 +50,10 @@
               "target": "Package",
               "version": "[6.0.4, )"
             },
+            "Microsoft.AspNetCore.Cors": {
+              "target": "Package",
+              "version": "[2.2.0, )"
+            },
             "Microsoft.AspNetCore.Hosting.Abstractions": {
               "target": "Package",
               "version": "[2.2.0, )"
@@ -76,6 +80,14 @@
               "target": "Package",
               "version": "[6.0.4, )"
             },
+            "NReco.VideoConverter": {
+              "target": "Package",
+              "version": "[1.2.0, )"
+            },
+            "NReco.VideoConverter.LT": {
+              "target": "Package",
+              "version": "[1.2.0, )"
+            },
             "Pomelo.EntityFrameworkCore.MySql": {
               "target": "Package",
               "version": "[6.0.1, )"
@@ -95,6 +107,10 @@
             "X.PagedList": {
               "target": "Package",
               "version": "[8.4.0, )"
+            },
+            "Xabe.FFmpeg": {
+              "target": "Package",
+              "version": "[5.2.4, )"
             },
             "Z.EntityFramework.Extensions.EFCore": {
               "target": "Package",

@@ -47,6 +47,20 @@ builder.Services.AddScoped<ICitiesService, CitiesService>();
 builder.Services.AddScoped<IHomeServices, HomeServices>();
 builder.Services.AddScoped<IPhotoServices, PhotoServices>();
 
+// cors
+builder.Services.AddCors(
+    options =>
+    {
+        options.AddPolicy(
+            name: "AllowOrigin",
+            builder =>
+            {
+                builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+            }
+        );
+    }
+);
+
 // For Identity
 builder.Services
     .AddIdentity<User, IdentityRole>()
@@ -62,6 +76,7 @@ builder.Services.Configure<IdentityOptions>(
         options.Password.RequireUppercase = false;
     }
 );
+
 
 // Adding Authentication
 builder.Services
@@ -95,6 +110,8 @@ builder.Services
 
 var app = builder.Build();
 
+   app.UseRouting();
+ app.UseCors(x => x.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

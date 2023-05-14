@@ -9,11 +9,11 @@ using TouristApi.Services.PhotoServices;
 
 namespace TouristApi.Controllers
 {
-     [Route("photos")]
-    public class PhotosController :ControllerBase
+    [Route("photos")]
+    public class PhotosController : ControllerBase
     {
 
-            private readonly IPhotoServices _repository;
+        private readonly IPhotoServices _repository;
 
         public PhotosController(IPhotoServices repository)
         {
@@ -22,7 +22,7 @@ namespace TouristApi.Controllers
 
 
 
-           [HttpPost]
+        [HttpPost]
         [Route("add-Photo")]
         public async Task<ActionResult> AddPlace([FromForm] Photo photo)
         {
@@ -31,8 +31,8 @@ namespace TouristApi.Controllers
                 return NotFound();
             }
 
-         await _repository.AddAsync(photo);
-          return Ok(photo);
+            await _repository.AddAsync(photo);
+            return Ok(photo);
         }
 
 
@@ -43,11 +43,27 @@ namespace TouristApi.Controllers
 
             return Ok(await _repository.GetItems(page));
         }
-   
 
-      
+        [HttpGet]
+        [Route("get-Videos")]
+        public async Task<ActionResult> GetVideos([FromQuery] int page)
+        {
 
-       [HttpPost]
+            return Ok(await _repository.GetVideos(page));
+        }
+
+
+        [HttpGet]
+        [Route("get-photos-by-placeId")]
+        public async Task<ActionResult> GetPhotosByPlaceId([FromQuery] int page, [FromQuery] int placeId)
+        {
+
+            return Ok(await _repository.GetPhotosByPlaceId(placeId, page));
+        }
+
+
+
+        [HttpPost]
         [Route("delete-Photo")]
         public async Task<ActionResult> DeletePhoto([FromForm] int couponId)
         {

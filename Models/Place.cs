@@ -13,6 +13,9 @@ namespace TouristApi.Models
 
         public int CountryId { get; set; }
 
+       public int Order { get; set; }
+
+
 
         public int CityId { get; set; }
         public string? Title { get; set; }

@@ -202,6 +202,9 @@ namespace TouristApi.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<string>("Capital")
+                        .HasColumnType("longtext");
+
                     b.Property<int>("ContinentId")
                         .HasColumnType("int");
 
@@ -254,7 +257,13 @@ namespace TouristApi.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<int>("CityId")
+                        .HasColumnType("int");
+
                     b.Property<int>("PlaceId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Type")
                         .HasColumnType("int");
 
                     b.Property<string>("image")
@@ -285,6 +294,9 @@ namespace TouristApi.Migrations
 
                     b.Property<string>("Image")
                         .HasColumnType("longtext");
+
+                    b.Property<int>("Order")
+                        .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .HasColumnType("longtext");

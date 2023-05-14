@@ -7,8 +7,9 @@ using TouristApi.Models.BaseEntity;
 
 namespace TouristApi.ViewModel
 {
-    public class ResponseCity :BaseResponse
+    public class ResponseCity 
     {
         public Country? Country { get; set; }
+        public List<City>? Cities { get; set; }
     }
 }

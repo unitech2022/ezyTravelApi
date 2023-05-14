@@ -42,10 +42,10 @@ namespace TouristApi.Controllers
 
         [HttpGet]
         [Route("get-favorites")]
-        public async Task<ActionResult> GetFavorites([FromForm] int page)
+        public async Task<ActionResult> GetFavorites([FromQuery] string ids)
         {
 
-            return Ok(await _repository.GetItems(page));
+            return Ok(await _repository.GetFavorites(ids));
         }
 
         [HttpGet]
@@ -56,9 +56,9 @@ namespace TouristApi.Controllers
             return Ok(await _repository.GitById(couponId));
         }
 
+        
 
-
-
+        
 
 
         [HttpPost]

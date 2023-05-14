@@ -16,7 +16,13 @@ namespace TouristApi.Services
 
            Task<dynamic> GitPlacesByCityId(int typeId,int page);
 
+           Task<dynamic> GitPlacesByCityIdAdmin(int typeId);
+
            Task<dynamic> Add(Place place);
+
+           Task<dynamic> GetPlaceDetails(int placeId);
+
+             Task<dynamic> GetPlaceDetailsList(int cityId,int index );
 
            Task<dynamic> GetAll();
     }

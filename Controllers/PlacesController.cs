@@ -16,12 +16,12 @@ namespace TouristApi.Controllers
     [Route("places")]
     public class PlacesController : ControllerBase
     {
-        
-   private readonly IPlacesService _repository;
-    private readonly IPhotoServices _repositoryPhotos;
+
+        private readonly IPlacesService _repository;
+        private readonly IPhotoServices _repositoryPhotos;
         private IMapper _mapper;
 
-        public PlacesController(IPlacesService repository, IMapper mapper,IPhotoServices repositoryPhotos)
+        public PlacesController(IPlacesService repository, IMapper mapper, IPhotoServices repositoryPhotos)
         {
             _repository = repository;
             _repositoryPhotos = repositoryPhotos;
@@ -29,7 +29,7 @@ namespace TouristApi.Controllers
         }
 
 
-         [HttpPost]
+        [HttpPost]
         [Route("add-place")]
         public async Task<ActionResult> AddPlace([FromForm] Place city)
         {
@@ -38,11 +38,14 @@ namespace TouristApi.Controllers
                 return NotFound();
             }
 
-          Place place=  await _repository.Add(city);
-            Photo photo=new Photo{
-                PlaceId=place.Id,
-                image=place.Image
-        };
+            Place place = await _repository.Add(city);
+            Photo photo = new Photo
+            {
+                PlaceId = place.Id,
+                image = place.Image,
+                CityId = place.CityId,
+
+            };
             await _repositoryPhotos.AddAsync(photo);
 
             return Ok(city);
@@ -56,10 +59,17 @@ namespace TouristApi.Controllers
 
             return Ok(await _repository.GetItems(page));
         }
-   
+        [HttpGet]
+        [Route("get-placeDetails")]
+        public async Task<ActionResult> GetPlaceDetails([FromQuery] int placeId)
+        {
+
+            return Ok(await _repository.GetPlaceDetails(placeId));
+        }
 
 
-      [HttpGet]
+
+        [HttpGet]
         [Route("get-all-places")]
         public async Task<ActionResult> GetAllPlaces()
         {
@@ -68,8 +78,16 @@ namespace TouristApi.Controllers
         }
 
 
+        [HttpGet]
+        [Route("get-places-details")]
+        public async Task<ActionResult> GetPlacesDetails([FromQuery] int cityId,[FromQuery] int index)
+        {
 
-      [HttpGet]
+            return Ok(await _repository.GetPlaceDetailsList(cityId,index));
+        }
+
+
+        [HttpGet]
         [Route("get-place-byId")]
         public async Task<ActionResult> GetPlaceById([FromQuery] int cityId)
         {
@@ -80,15 +98,15 @@ namespace TouristApi.Controllers
 
 
 
-          [HttpGet] 
+        [HttpGet]
         [Route("git-places-byCountryId")]
-        public async Task<ActionResult> GitPlacesByCountryId([FromQuery] int countryId,[FromQuery] int page)
+        public async Task<ActionResult> GitPlacesByCountryId([FromQuery] int countryId, [FromQuery] int page)
         {
 
-            return Ok(await _repository.GitPlacesByCountryId(countryId,page));
+            return Ok(await _repository.GitPlacesByCountryId(countryId, page));
         }
 
-     [HttpGet] 
+        [HttpGet]
         [Route("git-places-byCountryId-admin")]
         public async Task<ActionResult> GitPlacesByCountryIdAdmin([FromQuery] int countryId)
         {
@@ -96,17 +114,23 @@ namespace TouristApi.Controllers
             return Ok(await _repository.GitPlacesByCountryIdAdmin(countryId));
         }
 
-        [HttpGet] 
+        [HttpGet]
         [Route("git-places-by-city-Id")]
-        public async Task<ActionResult> GitPlacesByCityId([FromQuery] int cityId,[FromQuery] int page)
+        public async Task<ActionResult> GitPlacesByCityId([FromQuery] int cityId, [FromQuery] int page)
         {
 
-            return Ok(await _repository.GitPlacesByCityId(cityId,page));
+            return Ok(await _repository.GitPlacesByCityId(cityId, page));
+        }
+        [HttpGet]
+        [Route("git-places-by-city-Id-admin")]
+        public async Task<ActionResult> GitPlacesByCityIdAdmin([FromQuery] int cityId)
+        {
+
+            return Ok(await _repository.GitPlacesByCityIdAdmin(cityId));
         }
 
-  
 
-       [HttpPost]
+        [HttpPost]
         [Route("delete-place")]
         public async Task<ActionResult> DeletePlace([FromForm] int couponId)
         {
@@ -124,17 +148,17 @@ namespace TouristApi.Controllers
         }
 
 
-         [HttpPost]
+        [HttpPost]
         [Route("update-place")]
-        public async Task<ActionResult> UpdatePlace([FromForm] UpdatePlace update ,[FromForm] int Id)
+        public async Task<ActionResult> UpdatePlace([FromForm] UpdatePlace update, [FromForm] int Id)
         {
-             Place country = await _repository.GitById(Id);
+            Place country = await _repository.GitById(Id);
             if (country == null)
             {
                 return NotFound();
             }
-           
-           
+
+
             _mapper.Map(update, country);
 
             // _repository.UpdateCart(cart);
@@ -142,5 +166,6 @@ namespace TouristApi.Controllers
 
             return Ok(country);
         }
-   
-    }}
+
+    }
+}

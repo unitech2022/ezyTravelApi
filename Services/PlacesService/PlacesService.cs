@@ -8,6 +8,7 @@ using X.PagedList;
 using TouristApi.Models.BaseEntity;
 using TouristApi.Models;
 using Microsoft.EntityFrameworkCore;
+using TouristApi.ViewModel;
 
 namespace TouristApi.Services
 {
@@ -88,6 +89,97 @@ namespace TouristApi.Services
             return baseResponse;
         }
 
+        public async Task<dynamic> GetPlaceDetails(int placeId)
+        {
+            List<string> photos = new List<string>();
+            List<string> videos = new List<string>();
+
+            Place? place = await _context.Places!.FirstOrDefaultAsync(t => t.Id == placeId);
+            City? city = await _context.Cities!.FirstOrDefaultAsync(t => t.Id == place!.CityId);
+
+            Country? country = await _context.Countries!.FirstOrDefaultAsync(t => t.Id == place!.CountryId);
+
+            List<Photo> allPhotos = await _context.Photos!.Where(t => t.PlaceId == placeId && t.Type == 0).ToListAsync();
+            List<Photo> allVideos = await _context.Photos!.Where(t => t.PlaceId == placeId && t.Type == 1).ToListAsync();
+            if (allPhotos.Count > 0)
+            {
+                photos = allPhotos.Select(s => s.image!).ToList();
+                // photos.Add(place!.Image!);
+            }
+
+            if (allVideos.Count > 0)
+            {
+                videos = allVideos.Select(s => s.image!).ToList();
+            }
+
+
+            return new
+            {
+                place = place,
+                city = city,
+                country = country,
+                photos = photos,
+                videos = videos
+            };
+        }
+
+
+
+
+        //   list places
+        public async Task<dynamic> GetPlaceDetailsList(int cityId, int index)
+        {
+            List<string> photos = new List<string>();
+            List<string> videos = new List<string>();
+            List<PlacesDetailsResponse> placesDetailsList = new List<PlacesDetailsResponse>();
+
+            List<Place> places = await _context.Places!.Where(t => t.CityId == cityId).ToListAsync();
+            City? city = await _context.Cities!.FirstOrDefaultAsync(t => t.Id == cityId);
+            Country? country = await _context.Countries!.FirstOrDefaultAsync(t => t.Id == city!.CountryId);
+
+
+            foreach (Place item in places)
+            {
+
+
+
+                // photos.Clear();
+                // videos.Clear();
+
+                List<string> allPhotos =  _context.Photos!.Where(t => t.PlaceId == item.Id && t.Type == 0).Select(s => s.image!).ToList();
+                List<string> allVideos =  _context.Photos!.Where(t => t.PlaceId == item.Id && t.Type == 1).Select(s => s.image!).ToList();
+                // if (allPhotos.Count > 0)
+                // {
+                //     photos = allPhotos.Select(s => s.image!).ToList();
+                //     // photos.Add(place!.Image!);
+                // }
+
+                // if (allVideos.Count > 0)
+                // {
+                //     videos = allVideos.Select(s => s.image!).ToList();
+                // }
+                PlacesDetailsResponse placesDetailsResponse = new PlacesDetailsResponse
+                {
+                    place = item,
+                    city = city,
+                    country = country,
+                    photos = allPhotos,
+                    videos = allVideos
+                };
+
+            
+                placesDetailsList.Add(placesDetailsResponse);
+            }
+           
+
+
+            return placesDetailsList.OrderByDescending(t => t.place.Id ==index);
+        }
+
+
+
+        //  
+
 
         public async Task<dynamic> GetAll()
         {
@@ -98,6 +190,9 @@ namespace TouristApi.Services
 
             return places;
         }
+
+
+
 
         public async Task<dynamic> GitById(int typeId)
         {
@@ -131,6 +226,19 @@ namespace TouristApi.Services
             return baseResponse;
         }
 
+
+        public async Task<dynamic> GitPlacesByCityIdAdmin(int typeId)
+        {
+            List<Place> places = await _context.Places!.Where(t => t.CityId == typeId).ToListAsync();
+
+
+
+
+
+            return places;
+        }
+
+
         public async Task<dynamic> GitPlacesByCountryId(int typeId, int page)
         {
             List<Place> places = await _context.Places!.Where(t => t.CountryId == typeId).ToListAsync();
@@ -159,13 +267,13 @@ namespace TouristApi.Services
 
 
 
-  public async Task<dynamic> GitPlacesByCountryIdAdmin(int typeId)
+        public async Task<dynamic> GitPlacesByCountryIdAdmin(int typeId)
         {
             List<Place> places = await _context.Places!.Where(t => t.CountryId == typeId).ToListAsync();
 
 
 
-           
+
             return places;
         }
 

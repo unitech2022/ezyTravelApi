@@ -9,5 +9,9 @@ namespace TouristApi.Services.PhotoServices
     public interface IPhotoServices :BaseInterface
     {
          Task<dynamic> GetAllPhots();
+
+        Task<dynamic> GetPhotosByPlaceId(int cityId,int page);
+
+        Task<dynamic> GetVideos(int page);
     }
 }

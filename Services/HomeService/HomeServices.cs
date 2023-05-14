@@ -23,7 +23,7 @@ namespace TouristApi.Services.HomeService
         public async Task<ResponseHome> GetHome()
         {
            List<Photo> welcomePhotos=await _context.Photos!.Take(5).ToListAsync();
-           List<Continent> continents=await _context.Continents!.ToListAsync();
+           List<Continent> continents=await _context.Continents!.OrderByDescending(t=>t.status).ToListAsync();
 
            ResponseHome responseHome=new ResponseHome{
             Welcome =welcomePhotos,

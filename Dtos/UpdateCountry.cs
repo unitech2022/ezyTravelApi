@@ -12,6 +12,8 @@ namespace TouristApi.Dtos
         public string? Language { get; set; }
 
         public string? Currency { get; set; }
+
+         public string? Capital { get; set; }
         public string? Name { get; set; }
         public string? Image { get; set; }
         public int status { get; set; }

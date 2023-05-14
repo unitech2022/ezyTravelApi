@@ -14,7 +14,9 @@ namespace TouristApi.Models
         public int ContinentId { get; set; }
 
         public string? Language { get; set; }
+        
 
+         public string? Capital { get; set; }
         public string? Currency { get; set; }
         public string? Name { get; set; }
         public string? Image { get; set; }
