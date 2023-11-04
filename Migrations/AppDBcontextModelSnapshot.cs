@@ -162,6 +162,9 @@ namespace TouristApi.Migrations
                     b.Property<string>("Image")
                         .HasColumnType("longtext");
 
+                    b.Property<bool>("IsMostPopular")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<string>("Title")
                         .HasColumnType("longtext");
 
@@ -280,6 +283,9 @@ namespace TouristApi.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<string>("AddressName")
+                        .HasColumnType("longtext");
+
                     b.Property<int>("CityId")
                         .HasColumnType("int");
 
@@ -293,6 +299,13 @@ namespace TouristApi.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<string>("Image")
+                        .HasColumnType("longtext");
+
+                    b.Property<bool>("IsMostPopular")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("LatLng")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<int>("Order")

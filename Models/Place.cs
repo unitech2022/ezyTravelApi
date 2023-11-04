@@ -18,6 +18,11 @@ namespace TouristApi.Models
 
 
         public int CityId { get; set; }
+
+
+         public string LatLng { get; set; }
+         public bool IsMostPopular { get; set; }
+        public string? AddressName { get; set; }
         public string? Title { get; set; }
 
         public string? Desc { get; set; }

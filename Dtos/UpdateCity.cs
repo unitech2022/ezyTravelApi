@@ -13,6 +13,7 @@ namespace TouristApi.Dtos
 
         public string? Image { get; set; }
         //  public string? ImageFlag { get; set; }
+        public bool IsMostPopular { get; set; }
         public int status { get; set; }
     }
 }

@@ -121,6 +121,17 @@ namespace TouristApi.Controllers
 
             return Ok(await _repository.GitPlacesByCityId(cityId, page));
         }
+
+
+  [HttpGet]
+        [Route("git-places-most-popular")]
+        public async Task<ActionResult> GitPlacesMostPopular()
+        {
+
+            return Ok(await _repository.GetMostPopularPlaces());
+        }
+
+
         [HttpGet]
         [Route("git-places-by-city-Id-admin")]
         public async Task<ActionResult> GitPlacesByCityIdAdmin([FromQuery] int cityId)

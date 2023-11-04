@@ -8,15 +8,16 @@ using X.PagedList;
 using TouristApi.Models.BaseEntity;
 using TouristApi.Models;
 using Microsoft.EntityFrameworkCore;
+using TouristApi.ViewModel;
 
 namespace TouristApi.Services
 {
     public class FavoriteService : IFavoriteService
     {
 
-         private readonly IMapper _mapper;
+        private readonly IMapper _mapper;
 
-       
+
         private readonly AppDBcontext _context;
 
         public FavoriteService(IMapper mapper, AppDBcontext context)
@@ -25,17 +26,17 @@ namespace TouristApi.Services
             _context = context;
         }
 
-        public async  Task<dynamic> AddAsync(dynamic Favorite)
+        public async Task<dynamic> AddAsync(dynamic Favorite)
         {
             await _context.Favorites!.AddAsync(Favorite);
             await _context.SaveChangesAsync();
             return Favorite;
-            
+
         }
 
         public async Task<dynamic> DeleteAsync(int typeId)
         {
-             Favorite? Favorite = await _context.Favorites!.FirstOrDefaultAsync(x => x.Id == typeId);
+            Favorite? Favorite = await _context.Favorites!.FirstOrDefaultAsync(x => x.Id == typeId);
 
             if (Favorite != null)
             {
@@ -45,31 +46,62 @@ namespace TouristApi.Services
             }
 
             return Favorite!;
-        
+
         }
 
-        public async Task<dynamic> GetFavorites(string ids)
+        public async Task<dynamic> GetFavorites(string ids, string idsPlace)
         {
-             string[] idsPlaces=new string[]{};
-            if(ids!=null){
-              idsPlaces=ids.Split("#");
-            }
-            
-            List<City> favorites=new List<City>();
-            foreach (var item in idsPlaces)
+            List<City> cities = new List<City>();
+            List<Place> places = new List<Place>();
+
+            // ** getCities
+            string[] idsCities = new string[] { };
+            if (ids != null)
             {
-                City? city=await _context.Cities!.FirstOrDefaultAsync(t=> t.Id==int.Parse(item));
-                if(city!=null){
-                    favorites.Add(city);
+                idsCities = ids.Split("#");
+            }
+
+
+            foreach (var item in idsCities)
+            {
+                City? city = await _context.Cities!.FirstOrDefaultAsync(t => t.Id == int.Parse(item));
+                if (city != null)
+                {
+                    cities.Add(city);
                 }
             }
-            return favorites;
+
+            //** get places
+            string[] newIdsPlaces = new string[] { };
+            if (ids != null)
+            {
+                newIdsPlaces = idsPlace.Split("#");
+            }
+
+
+            foreach (var item in newIdsPlaces)
+            {
+                Place? place = await _context.Places!.FirstOrDefaultAsync(t => t.Id == int.Parse(item));
+                if (place != null)
+                {
+                    places.Add(place);
+                }
+            }
+
+            FavoriteResponse favoriteResponse = new FavoriteResponse
+            {
+                Cities = cities,
+                Places = places
+            };
+
+
+            return favoriteResponse;
         }
 
-        public async Task<dynamic> GetItems( int page)
+        public async Task<dynamic> GetItems(int page)
         {
-             List<Favorite> Favorites = await _context.Favorites!.ToListAsync();
-           
+            List<Favorite> Favorites = await _context.Favorites!.ToListAsync();
+
 
 
             var pageResults = 10f;
@@ -98,14 +130,14 @@ namespace TouristApi.Services
             return Favorite!;
         }
 
-        public  bool SaveChanges()
+        public bool SaveChanges()
         {
-               return (_context.SaveChanges() >= 0);
+            return (_context.SaveChanges() >= 0);
         }
 
-        public  void UpdateObject(dynamic category)
+        public void UpdateObject(dynamic category)
         {
-           //
+            //
         }
     }
 }

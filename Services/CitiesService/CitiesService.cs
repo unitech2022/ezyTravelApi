@@ -231,6 +231,10 @@ namespace TouristApi.Services
 
         }
 
-
+        public async Task<dynamic> GetMostPopularCities()
+        {
+              List<City> MostPopularCities=await _context.Cities!.Where(t=> t.IsMostPopular==true).ToListAsync();
+              return MostPopularCities;
+        }
     }
 }

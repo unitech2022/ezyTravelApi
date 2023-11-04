@@ -12,7 +12,11 @@ namespace TouristApi.ViewModel
 
       public List<Photo>? Welcome { get; set; }
 
-    public List<Continent>? continents { get; set; }
+      public List<Continent>? continents { get; set; }
+
+
+       public List<CityResponse>? MostPopularCities { get; set; }
+        public List<PlaceResponse>? MostPopularPlaces { get; set; }
 
 
 

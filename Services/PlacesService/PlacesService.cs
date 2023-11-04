@@ -14,9 +14,7 @@ namespace TouristApi.Services
 {
     public class PlacesService : IPlacesService
     {
-
         private readonly IMapper _mapper;
-
 
         private readonly AppDBcontext _context;
 
@@ -34,6 +32,7 @@ namespace TouristApi.Services
             return place;
 
         }
+       
         public async Task<dynamic> Add(Place place)
         {
             City? city = await _context.Cities!.FirstOrDefaultAsync(t => t.Id == place.CityId);
@@ -43,8 +42,6 @@ namespace TouristApi.Services
             return place;
 
         }
-
-
 
         public async Task<dynamic> DeleteAsync(int typeId)
         {
@@ -123,9 +120,6 @@ namespace TouristApi.Services
             };
         }
 
-
-
-
         //   list places
         public async Task<dynamic> GetPlaceDetailsList(int cityId, int index)
         {
@@ -175,12 +169,7 @@ namespace TouristApi.Services
 
             return placesDetailsList.OrderByDescending(t => t.place.Id ==index);
         }
-
-
-
         //  
-
-
         public async Task<dynamic> GetAll()
         {
             List<Place> places = await _context.Places!.ToListAsync();
@@ -190,9 +179,6 @@ namespace TouristApi.Services
 
             return places;
         }
-
-
-
 
         public async Task<dynamic> GitById(int typeId)
         {
@@ -226,7 +212,6 @@ namespace TouristApi.Services
             return baseResponse;
         }
 
-
         public async Task<dynamic> GitPlacesByCityIdAdmin(int typeId)
         {
             List<Place> places = await _context.Places!.Where(t => t.CityId == typeId).ToListAsync();
@@ -237,7 +222,6 @@ namespace TouristApi.Services
 
             return places;
         }
-
 
         public async Task<dynamic> GitPlacesByCountryId(int typeId, int page)
         {
@@ -265,8 +249,6 @@ namespace TouristApi.Services
             return baseResponse;
         }
 
-
-
         public async Task<dynamic> GitPlacesByCountryIdAdmin(int typeId)
         {
             List<Place> places = await _context.Places!.Where(t => t.CountryId == typeId).ToListAsync();
@@ -277,7 +259,6 @@ namespace TouristApi.Services
             return places;
         }
 
-
         public bool SaveChanges()
         {
             return (_context.SaveChanges() >= 0);
@@ -286,6 +267,13 @@ namespace TouristApi.Services
         public void UpdateObject(dynamic category)
         {
             //
+        }
+
+        public async Task<dynamic> GetMostPopularPlaces()
+        {
+               List<Place> MostPopularPlaces=await _context.Places!.Where(t=> t.IsMostPopular==true).ToListAsync();
+
+               return MostPopularPlaces;
         }
     }
 }

@@ -17,7 +17,7 @@ namespace TouristApi.Services
            Task<CityDetails> GetCityDetails(int cityId);
 
        Task<dynamic> SearchCity(string text);
-
+  Task<dynamic> GetMostPopularCities();
 
           
     }

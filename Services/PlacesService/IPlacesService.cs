@@ -25,5 +25,7 @@ namespace TouristApi.Services
              Task<dynamic> GetPlaceDetailsList(int cityId,int index );
 
            Task<dynamic> GetAll();
+
+            Task<dynamic> GetMostPopularPlaces();
     }
 }
